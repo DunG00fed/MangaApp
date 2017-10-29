@@ -12,14 +12,14 @@ const MANGA_READER_URL = 'http://www.mangareader.net';
 /////////////////
 
 /**
- * Return manga details from popular page.
+ * Return list of manga details from popular page.
  * @method
  * @param  {Http (https) Request Object} req
  * @param  {Http (https) Request Object} res
  * @return {JSON}
  */
 router.get('/popular', function(req, res) {
-  var page_num = req.query.page;
+  var page_num = req.query.page ? req.query.page: 1;
 
   console.log("fetching Manga");
 
@@ -178,7 +178,7 @@ router.get('/read', function(req, res) {
 });
 
 /**
- * Retrieve managa chapter image url.
+ * Retrieve manga chapter image url.
  * @method
  * @param  {string} uri
  * @return {Promise}
