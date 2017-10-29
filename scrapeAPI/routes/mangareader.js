@@ -1,7 +1,7 @@
 //Dependencies
 var express = require('express'),
-  request = require('request'),
-  cheerio = require('cheerio');
+    request = require('request'),
+    cheerio = require('cheerio');
 
 var router = express.Router();
 
@@ -10,7 +10,7 @@ const MANGA_READER_URL = 'http://www.mangareader.net';
 
 //Routes
 router.get('/popular', function(req, res) {
-  var page_num = req.param('page');
+  var page_num = req.params.page;
 
   console.log("fetching Manga");
 
@@ -24,7 +24,7 @@ router.get('/popular', function(req, res) {
           url: $(this).find('.manga_name').find('a').attr('href'),
           img: $(this).find('.imgsearchresults').attr('style').replace("background-image:url('", '').replace("')", ''),
           genre: $(this).find('.manga_genre').text()
-        });
+        });w
       });
       console.log(manga_list[0]);
       res.send(JSON.stringify(manga_list));
@@ -34,8 +34,8 @@ router.get('/popular', function(req, res) {
 
 
 router.get('/search', function(req, res) {
-  var genre = req.param('genre');
-  var next_manga = req.param('next');
+  var genre = req.params.genre;
+  var next_manga = req.params.next;
 
   console.log(MANGA_READER_URL + '/search/?w=&rd=0&status=0&order=2&genre=' + genre + '&p=' + next_manga);
 
@@ -60,7 +60,7 @@ router.get('/search', function(req, res) {
 
 
 router.get('/details', function(req, res) {
-  var manga_url = req.param('url');
+  var manga_url = req.params.url;
 
   console.log("fetching Details");
 
@@ -107,7 +107,7 @@ router.get('/details', function(req, res) {
 
 
 router.get('/read', function(req, res) {
-  var url = req.param('url');
+  var url = req.params.url;
 
   console.log("fetching Pages");
 
@@ -142,19 +142,18 @@ router.get('/read', function(req, res) {
 });
 
 function getImage(uri) {
-  var deferred = Promise.defer();
-  request(uri, function(err, res, html) {
-    if (!err && res.statusCode == 200) {
-      var $ = cheerio.load(html);
-      $('#img', '#imgholder').each(function() {
-        deferred.resolve($(this).attr('src'));
-      });
-    } else {
-      deferred.reject(err);
-    }
+  return new Promise(function(resolve, reject) {
+    request(uri, function(err, res, html) {
+      if (!err && res.statusCode == 200) {
+        var $ = cheerio.load(html);
+        $('#img', '#imgholder').each(function() {
+            resolve($(this).attr('src'));
+        });
+      } else {
+          reject(err);
+      }
+    });
   });
-
-  return deferred.promise;
 }
 
 //Return router

@@ -1,7 +1,7 @@
 //Dependencies
 var express = require('express'),
-  request = require('request'),
-  cheerio = require('cheerio');
+    request = require('request'),
+    cheerio = require('cheerio');
 
 var router = express.Router();
 
@@ -10,7 +10,7 @@ const MANGA_HERE_URL = 'http://www.mangahere.co';
 
 //Routes
 router.get('/popular', function(req, res) {
-  var page_num = req.param('page');
+  var page_num = req.params.page;
 
   console.log("fetching Manga");
 
@@ -41,7 +41,7 @@ router.get('/search', function(req, res) {
 
 
 router.get('/details', function(req, res) {
-  var manga_url = req.param('url');
+  var manga_url = req.params.url;
 
   request(manga_url, function(err, resp, html) {
     if (!err && resp.statusCode == 200) {
@@ -82,7 +82,7 @@ router.get('/details', function(req, res) {
 
 
 router.get('/read', function(req, res) {
-  var chapter_url = req.param('url');
+  var chapter_url = req.params.url;
 
   console.log("fetching Pages");
 
@@ -119,17 +119,16 @@ router.get('/read', function(req, res) {
 });
 
 function getImage(uri) {
-  var deferred = Promise.defer();
-  request(uri, function(err, res, html) {
-    if (!err && res.statusCode == 200) {
-      var $ = cheerio.load(html);
-      deferred.resolve($('section#viewer').children('a').children('img').attr('src'));
-    } else {
-      deferred.reject(err);
-    }
+  return new Promise(function(resolve, reject) {
+    request(uri, function(err, res, html) {
+      if (!err && res.statusCode == 200) {
+        var $ = cheerio.load(html);
+        resolve($('section#viewer').children('a').children('img').attr('src'));
+      } else {
+        reject(err);
+      }
+    });
   });
-
-  return deferred.promise;
 }
 
 //Return router
