@@ -1,7 +1,7 @@
 //Dependencies
 var express = require('express'),
-  request = require('request'),
-  cheerio = require('cheerio');
+    request = require('request'),
+    cheerio = require('cheerio');
 
 var router = express.Router();
 
@@ -19,7 +19,7 @@ const MANGA_HERE_URL = 'http://www.mangahere.co';
  * @return {JSON}
  */
 router.get('/popular', function(req, res) {
-  var page_num = req.params.page;
+  var page_num = req.query.page;
 
   console.log("fetching Manga");
 
@@ -38,6 +38,9 @@ router.get('/popular', function(req, res) {
       });
       res.send(JSON.stringify(manga_list));
     }
+    else {
+      console.log(err);
+    }
   });
 });
 
@@ -49,8 +52,8 @@ router.get('/popular', function(req, res) {
  * @return {JSON}
  */
 router.get('/search', function(req, res) {
-  var genre = req.params.genre;
-  var next_manga = req.params.next;
+  var genre = req.query.genre;
+  var next_manga = req.query.next;
 
 });
 
@@ -62,7 +65,7 @@ router.get('/search', function(req, res) {
  * @return {JSON}
  */
 router.get('/details', function(req, res) {
-  var manga_url = req.params.url;
+  var manga_url = req.query.url;
   console.log(manga_url);
 
   request(manga_url, function(err, resp, html) {
@@ -97,6 +100,9 @@ router.get('/details', function(req, res) {
 
       res.send(JSON.stringify(manga_info));
     }
+    else {
+      console.log(err)
+    }
   });
 
 });
@@ -109,7 +115,7 @@ router.get('/details', function(req, res) {
  * @return {JSON}
  */
 router.get('/read', function(req, res) {
-  var chapter_url = req.params.url;
+  var chapter_url = req.query.url;
 
   console.log("fetching Pages");
 

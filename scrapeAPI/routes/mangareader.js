@@ -19,7 +19,7 @@ const MANGA_READER_URL = 'http://www.mangareader.net';
  * @return {JSON}
  */
 router.get('/popular', function(req, res) {
-  var page_num = req.params.page;
+  var page_num = req.query.page;
 
   console.log("fetching Manga");
 
@@ -39,6 +39,9 @@ router.get('/popular', function(req, res) {
       console.log(manga_list[0]);
       res.send(JSON.stringify(manga_list));
     }
+    else {
+      console.log(err);
+    }
   });
 });
 
@@ -50,8 +53,8 @@ router.get('/popular', function(req, res) {
  * @return {JSON}
  */
 router.get('/search', function(req, res) {
-  var genre = req.params.genre;
-  var next_manga = req.params.next;
+  var genre = req.query.genre;
+  var next_manga = req.query.next;
 
   console.log(MANGA_READER_URL + '/search/?w=&rd=0&status=0&order=2&genre=' + genre + '&p=' + next_manga);
 
@@ -71,6 +74,9 @@ router.get('/search', function(req, res) {
         console.log(manga_list[0]);
         res.send(JSON.stringify(manga_list));
       }
+      else {
+        console.log(err);
+      }
     });
 });
 
@@ -82,7 +88,7 @@ router.get('/search', function(req, res) {
  * @return {JSON}
  */
 router.get('/details', function(req, res) {
-  var manga_url = req.params.url;
+  var manga_url = req.query.url;
 
   console.log("fetching Details");
 
@@ -123,6 +129,9 @@ router.get('/details', function(req, res) {
 
       res.send(JSON.stringify(manga_info));
     }
+    else {
+      console.log(err);
+    }
   });
 });
 
@@ -134,7 +143,7 @@ router.get('/details', function(req, res) {
  * @return {JSON}
  */
 router.get('/read', function(req, res) {
-  var url = req.params.url;
+  var url = req.query.url;
 
   console.log("fetching Pages");
 
