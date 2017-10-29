@@ -1,7 +1,7 @@
 //Dependencies
 var express = require('express'),
-    request = require('request'),
-    cheerio = require('cheerio');
+  request = require('request'),
+  cheerio = require('cheerio');
 
 var router = express.Router();
 
@@ -27,14 +27,14 @@ router.get('/popular', function(req, res) {
     if (!err && resp.statusCode == 200) {
       var $ = cheerio.load(html);
       var manga_list = [];
-      
+
       $('div.mangaresultinner', '#mangaresults').each(function() {
         manga_list.push({
           title: $(this).find('.manga_name').find('a').text(),
           url: $(this).find('.manga_name').find('a').attr('href'),
           img: $(this).find('.imgsearchresults').attr('style').replace("background-image:url('", '').replace("')", ''),
           genre: $(this).find('.manga_genre').text()
-        });w
+        });
       });
       console.log(manga_list[0]);
       res.send(JSON.stringify(manga_list));
@@ -180,10 +180,10 @@ function getImage(uri) {
       if (!err && res.statusCode == 200) {
         var $ = cheerio.load(html);
         $('#img', '#imgholder').each(function() {
-            resolve($(this).attr('src'));
+          resolve($(this).attr('src'));
         });
       } else {
-          reject(err);
+        reject(err);
       }
     });
   });

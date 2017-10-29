@@ -1,7 +1,7 @@
 //Dependencies
 var express = require('express'),
-    request = require('request'),
-    cheerio = require('cheerio');
+  request = require('request'),
+  cheerio = require('cheerio');
 
 var router = express.Router();
 
@@ -23,13 +23,12 @@ router.get('/popular', function(req, res) {
 
   console.log("fetching Manga");
 
-  request(MANGA_HERE_URL + '/directory/' + page_num +'.htm', function(err, resp, html) {
+  request(MANGA_HERE_URL + '/directory/' + page_num + '.htm', function(err, resp, html) {
     if (!err && resp.statusCode == 200) {
       var $ = cheerio.load(html);
       var manga_list = [];
 
       $('li', '.directory_list').each(function() {
-
         manga_list.push({
           title: $(this).find('.title').children('a').attr('title'),
           url: $(this).find('.title').children('a').attr('href'),
