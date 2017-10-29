@@ -7,8 +7,17 @@ var router = express.Router();
 
 const MANGA_HERE_URL = 'http://www.mangahere.co';
 
+/////////////////
+//   Routes    //
+/////////////////
 
-//Routes
+/**
+ * Return manga details from popular page.
+ * @method
+ * @param  {Http (https) Request Object} req
+ * @param  {Http (https) Request Object} res
+ * @return {JSON}
+ */
 router.get('/popular', function(req, res) {
   var page_num = req.params.page;
 
@@ -33,15 +42,29 @@ router.get('/popular', function(req, res) {
   });
 });
 
+/**
+ * Return manga details from search.
+ * @method
+ * @param  {Http (https) Request Object} req
+ * @param  {Http (https) Request Object} res
+ * @return {JSON}
+ */
 router.get('/search', function(req, res) {
-  var genre = req.param('genre');
-  var next_manga = req.param('next');
+  var genre = req.params.genre;
+  var next_manga = req.params.next;
 
 });
 
-
+/**
+ * Return single manga details.
+ * @method
+ * @param  {Http (https) Request Object} req
+ * @param  {Http (https) Request Object} res
+ * @return {JSON}
+ */
 router.get('/details', function(req, res) {
   var manga_url = req.params.url;
+  console.log(manga_url);
 
   request(manga_url, function(err, resp, html) {
     if (!err && resp.statusCode == 200) {
@@ -79,8 +102,13 @@ router.get('/details', function(req, res) {
 
 });
 
-
-
+/**
+ * Return a list of image urls of a single manga chapter.
+ * @method
+ * @param  {Http (https) Request Object} req
+ * @param  {Http (https) Request Object} res
+ * @return {JSON}
+ */
 router.get('/read', function(req, res) {
   var chapter_url = req.params.url;
 
@@ -118,6 +146,12 @@ router.get('/read', function(req, res) {
   });
 });
 
+/**
+ * Retrieve managa chapter image url.
+ * @method
+ * @param  {string} uri
+ * @return {Promise}
+ */
 function getImage(uri) {
   return new Promise(function(resolve, reject) {
     request(uri, function(err, res, html) {

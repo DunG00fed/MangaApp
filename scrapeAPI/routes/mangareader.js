@@ -7,8 +7,17 @@ var router = express.Router();
 
 const MANGA_READER_URL = 'http://www.mangareader.net';
 
+/////////////////
+//   Routes    //
+/////////////////
 
-//Routes
+/**
+ * Return manga details from popular page.
+ * @method
+ * @param  {Http (https) Request Object} req
+ * @param  {Http (https) Request Object} res
+ * @return {JSON}
+ */
 router.get('/popular', function(req, res) {
   var page_num = req.params.page;
 
@@ -18,6 +27,7 @@ router.get('/popular', function(req, res) {
     if (!err && resp.statusCode == 200) {
       var $ = cheerio.load(html);
       var manga_list = [];
+      
       $('div.mangaresultinner', '#mangaresults').each(function() {
         manga_list.push({
           title: $(this).find('.manga_name').find('a').text(),
@@ -32,7 +42,13 @@ router.get('/popular', function(req, res) {
   });
 });
 
-
+/**
+ * Return manga details from search.
+ * @method
+ * @param  {Http (https) Request Object} req
+ * @param  {Http (https) Request Object} res
+ * @return {JSON}
+ */
 router.get('/search', function(req, res) {
   var genre = req.params.genre;
   var next_manga = req.params.next;
@@ -58,7 +74,13 @@ router.get('/search', function(req, res) {
     });
 });
 
-
+/**
+ * Return single manga details.
+ * @method
+ * @param  {Http (https) Request Object} req
+ * @param  {Http (https) Request Object} res
+ * @return {JSON}
+ */
 router.get('/details', function(req, res) {
   var manga_url = req.params.url;
 
@@ -104,8 +126,13 @@ router.get('/details', function(req, res) {
   });
 });
 
-
-
+/**
+ * Return a list of image urls of a single manga chapter.
+ * @method
+ * @param  {Http (https) Request Object} req
+ * @param  {Http (https) Request Object} res
+ * @return {JSON}
+ */
 router.get('/read', function(req, res) {
   var url = req.params.url;
 
@@ -141,6 +168,12 @@ router.get('/read', function(req, res) {
   });
 });
 
+/**
+ * Retrieve managa chapter image url.
+ * @method
+ * @param  {string} uri
+ * @return {Promise}
+ */
 function getImage(uri) {
   return new Promise(function(resolve, reject) {
     request(uri, function(err, res, html) {
