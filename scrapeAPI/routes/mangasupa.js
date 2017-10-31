@@ -5,7 +5,7 @@ var express = require('express'),
 
 var router = express.Router();
 
-const MANGA_READER_URL = 'http://www.mangareader.net';
+const MANGA_SUPA_URL = 'http://mangasupa.com/';
 
 /////////////////
 //   Routes    //

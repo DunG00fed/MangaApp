@@ -1,7 +1,8 @@
 //Dependencies
 var express = require('express'),
     request = require('request'),
-    cheerio = require('cheerio');
+    cheerio = require('cheerio'),
+    phantom = require('phantom');
 
 var router = express.Router();
 
@@ -68,7 +69,7 @@ router.get('/details', function(req, res) {
   var manga_url = req.query.url;
   console.log(manga_url);
 
-  request(manga_url, function(err, resp, html) {
+  request(MANGA_HERE_URL + manga_url, function(err, resp, html) {
     if (!err && resp.statusCode == 200) {
       var $ = cheerio.load(html);
 
@@ -121,7 +122,7 @@ router.get('/read', function(req, res) {
 
   console.log(chapter_url);
 
-  request(chapter_url + '1.html', function(err, resp, html) {
+  request(MANGA_HERE_URL + chapter_url + '1.html', function(err, resp, html) {
     if (!err && resp.statusCode == 200) {
       var $ = cheerio.load(html);
       var page_num = $('.readpage_top').find('select.wid60').children('option').length;
@@ -131,7 +132,7 @@ router.get('/read', function(req, res) {
       var count;
 
       for (count = 1; count <= page_num; count++) {
-        promises.push(getImage(chapter_url + count + '.html'));
+        promises.push(getImage(MANGA_HERE_URL + chapter_url + count + '.html'));
       }
 
       Promise.all(promises).then(function(values) {
@@ -144,8 +145,8 @@ router.get('/read', function(req, res) {
         });
         console.log(pages);
         res.send(JSON.stringify(pages));
-      }).catch(function(err) {
-        console.log(err);
+      }).catch(function() {
+        console.log('Unable to access network');
       });
     }
   });
@@ -159,13 +160,28 @@ router.get('/read', function(req, res) {
  */
 function getImage(uri) {
   return new Promise(function(resolve, reject) {
-    request(uri, function(err, res, html) {
-      if (!err && res.statusCode == 200) {
-        var $ = cheerio.load(html);
-        resolve($('section#viewer').children('a').children('img').attr('src'));
-      } else {
-        reject(err);
-      }
+    phantom.create([]).then(function(ph) {
+      _ph = ph;
+      return _ph.createPage();
+    }).then(function(page) {
+      _page = page;
+      return _page.open(uri);
+    }).then(function(status) {
+      console.log(status);
+      _page.injectJs('http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
+    }).then(function() {
+          console.log('hi');
+          setTimeout(function() {
+              _page.evaluate(function() {
+                  return document.title;
+                }).then(function(result) {
+                    console.log(result);
+                    resolve(result);
+                    // _ph.exit();
+                });
+          }, 5000);
+    }).catch(function(err) {
+      reject(err);
     });
   });
 }
