@@ -15,8 +15,7 @@ const PORT = 3000;
 
 server.use('/api/mangareader', require('./routes/mangareader'));
 server.use('/api/mangaonline', require('./routes/mangaonline'));
-server.use('/api/mangasupa', require('./routes/mangasupa'));
-server.use('/api/manganel', require('./routes/manganel'));
+server.use('/api/mangapanda', require('./routes/mangapanda'));
 // server.use('/api/mangahere', require('./routes/mangahere'));  // Currently Abandoned
 
 //============== Start Server===========//
