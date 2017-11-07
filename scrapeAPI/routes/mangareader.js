@@ -5,14 +5,14 @@ var express = require('express'),
 
 var router = express.Router();
 
-const MANGA_READER_URL = 'http://www.mangareader.net';
+const MANGA_READER_URL = 'http://www.mangareader.net/';
 
 /////////////////
 //   Routes    //
 /////////////////
 
 /**
- * Return list of manga details from popular page.
+ * Return list of manga from popular page.
  * @method
  * @param  {Http (https) Request Object} req
  * @param  {Http (https) Request Object} res
@@ -23,7 +23,7 @@ router.get('/popular', function(req, res) {
 
   console.log("fetching Manga");
 
-  request(MANGA_READER_URL + '/popular/' + page_num, function(err, resp, html) {
+  request(MANGA_READER_URL + 'popular/' + page_num, function(err, resp, html) {
     if (!err && resp.statusCode == 200) {
       var $ = cheerio.load(html);
       var manga_list = [];
@@ -46,7 +46,7 @@ router.get('/popular', function(req, res) {
 });
 
 /**
- * Return manga details from search.
+ * Return list of manga from advanced search.
  * @method
  * @param  {Http (https) Request Object} req
  * @param  {Http (https) Request Object} res
@@ -56,9 +56,9 @@ router.get('/search', function(req, res) {
   var genre = req.query.genre;
   var next_manga = req.query.next;
 
-  console.log(MANGA_READER_URL + '/search/?w=&rd=0&status=0&order=2&genre=' + genre + '&p=' + next_manga);
+  console.log(MANGA_READER_URL + 'search/?w=&rd=0&status=0&order=2&genre=' + genre + '&p=' + next_manga);
 
-  request(MANGA_READER_URL + '/search/?w=&rd=0&status=0&order=2&genre=' + genre + '&p=' + next_manga,
+  request(MANGA_READER_URL + 'search/?w=&rd=0&status=0&order=2&genre=' + genre + '&p=' + next_manga,
     function(err, resp, html) {
       if (!err && resp.statusCode == 200) {
         var $ = cheerio.load(html);
@@ -81,59 +81,43 @@ router.get('/search', function(req, res) {
 });
 
 /**
- * Return single manga details.
+ * Return manga details.
  * @method
  * @param  {Http (https) Request Object} req
  * @param  {Http (https) Request Object} res
  * @return {JSON}
  */
-router.get('/details', function(req, res) {
-  var manga_url = req.query.url;
+ router.get('/:manga', function(req, res) {
+   var manga = req.params.manga;
 
-  console.log("fetching Details");
+   console.log("fetching Details");
 
-  request(MANGA_READER_URL + manga_url, function(err, resp, html) {
+   request(MANGA_READER_URL + manga, function(err, resp, html) {
 
-    if (!err && resp.statusCode == 200) {
-      var $ = cheerio.load(html);
+     if (!err && resp.statusCode == 200) {
+       var $ = cheerio.load(html);
 
-      var manga_info = {};
-      var genre_list = [];
-      var chapter_list = [];
+       var manga_info = {};
+       var genre_list = [];
 
-      manga_info.img = ($('#mangaimg').children('img').attr('src'));
-      manga_info.title = $('.aname', 'div#mangaproperties').text();
-      manga_info.summary = $('#readmangasum').children('p').text();
+       manga_info.img = ($('#mangaimg').children('img').attr('src'));
+       manga_info.title = $('.aname', 'div#mangaproperties').text();
+       manga_info.summary = $('#readmangasum').children('p').text();
+       manga_info.chapters = $('#listing').children('tbody').find('tr').length;
 
-      $('.genretags').each(function() {
-        genre_list.push($(this).text());
-      });
+       $('.genretags').each(function() {
+         genre_list.push($(this).text());
+       });
 
-      manga_info.genre = genre_list;
+       manga_info.genre = genre_list;
+       console.log(manga_info);
 
-      $('div.chico_manga', '#chapterlist').each(function() {
-        var chapter;
-        chapter = {
-          number: parseFloat($(this).next().text().replace(manga_info.title, '')),
-          title: $(this).parent().text().replace('\n\n' + $(this).next().text() + ' : ', ''),
-          url: $(this).next().attr('href'),
-          date: $(this).parent().next().text()
-        };
-        chapter_list.push(chapter);
-      });
-
-      manga_info.chapter_list = chapter_list;
-      manga_info.chapter_length = chapter_list.length;
-
-      console.log(manga_info);
-
-      res.send(JSON.stringify(manga_info));
-    }
-    else {
-      console.log(err);
-    }
-  });
-});
+       res.send(JSON.stringify(manga_info));
+     } else {
+       console.log(err);
+     }
+   });
+ });
 
 /**
  * Return a list of image urls of a single manga chapter.
@@ -142,43 +126,67 @@ router.get('/details', function(req, res) {
  * @param  {Http (https) Request Object} res
  * @return {JSON}
  */
-router.get('/read', function(req, res) {
-  var url = req.query.url;
+router.get('/:manga/:chapter', function(req, res) {
+  var manga = req.params.manga;
+  var chapter_num = req.params.chapter;
+  var chapter_url = MANGA_READER_URL + manga + '/' + chapter_num;
 
   console.log("fetching Pages");
 
-  request(MANGA_READER_URL + url, function(err, resp, html) {
-    if (!err && resp.statusCode == 200) {
-      var $ = cheerio.load(html);
-      var page_num = $('#pageMenu').find('option').length;
-
-      var pages = [];
-      var promises = [];
-      var count;
-
-      for (count = 1; count <= page_num; count++) {
-        promises.push(getImage(MANGA_READER_URL + url + '/' + count));
-      }
-
-      Promise.all(promises).then(function(values) {
-        count = 0;
-        values.forEach(function() {
-          var new_page = {
-            url: values[count]
-          };
-          pages[count++] = new_page;
-        });
-        console.log(pages);
-        res.send(JSON.stringify(pages));
-      }).catch(function(err) {
-        console.log(err);
-      });
-    }
+  getChapter(chapter_url, chapter_num).then(function(pages) {
+    var chapter = {
+        chapter: chapter_num,
+        pages: pages
+    };
+    console.log(chapter);
+    res.send(JSON.stringify(chapter));
+  }).catch(function(err) {
+    console.log(err);
   });
 });
 
+
 /**
- * Retrieve manga chapter image url.
+ * Retrieve manga chapter image urls.
+ * @method
+ * @param  {string} chapter_url
+ * @param  {integer} chapter_num
+ * @return {promise}
+ */
+function getChapter(chapter_url, chapter_num) {
+  return new Promise(function(resolve, reject) {
+    request(chapter_url, function(err, resp, html) {
+      if (!err && resp.statusCode == 200) {
+        var $ = cheerio.load(html);
+        var page_num = $('#pageMenu').find('option').length;
+
+        var pages = [];
+        var promises = [];
+        var count;
+
+        for (count = 1; count <= page_num; count++) {
+          promises.push(getImage(chapter_url + '/' + count));
+        }
+
+        Promise.all(promises).then(function(img_urls) {
+          for(count = 0; count < img_urls.length; count++){
+            pages.push( {
+              page: count + 1,
+              url: img_urls[count]
+            });
+          }
+          // console.log(pages);
+          resolve(pages);
+        }).catch(function(err) {
+          reject(err);
+        });
+      }
+    });
+  });
+}
+
+/**
+ * Retrieve manga page image url.
  * @method
  * @param  {string} uri
  * @return {Promise}
