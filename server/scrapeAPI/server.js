@@ -1,9 +1,8 @@
-//dependencies
-var express = require('express'),
-    bodyParser = require('body-parser');
-    // cors = require('cors');
-    server = express();
-    // server.use(cors());
+const express = require('express'),
+      bodyParser = require('body-parser');
+      // cors = require('cors');
+      server = express();
+      // server.use(cors());
 
 // parse application/x-www-form-urlencoded
 server.use(bodyParser.urlencoded({ extended: true }));
