@@ -2,6 +2,7 @@ const http = require('http'),
       express = require('express'),
       bodyParser = require('body-parser'),
       passport = require('passport');
+      config = require('./config');
 
 const server = express();
 const HOST = '127.0.0.1';
