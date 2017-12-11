@@ -15,6 +15,16 @@
 
 const Route = use('Route')
 
-Route.get('/', ({ request }) => {
-  return { greeting: 'Hello world in JSON' }
+Route.group(() => {
+
+  Route.post('login', 'AuthController.login')
+  Route.post('logout', 'AuthController.logout')
+  Route.post('register', 'RegisterController.register')
+
+  Route.group(() => {
+    Route.resource('users', 'UserController').apiOnly()
+  })
+  .middleware(['auth'])
+
 })
+.prefix('api/v1')
