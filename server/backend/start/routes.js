@@ -15,16 +15,10 @@
 
 const Route = use('Route')
 
+Route.post('login', 'AuthController.login')
+Route.post('logout', 'AuthController.logout')
+Route.post('register', 'RegisterController.registerUser')
+
 Route.group(() => {
-
-  Route.post('login', 'AuthController.login')
-  Route.post('logout', 'AuthController.logout')
-  Route.post('register', 'RegisterController.registerUser')
-
-  Route.group(() => {
-    Route.resource('users', 'UserController').apiOnly()
-  })
-  .middleware(['auth'])
-
-})
-.prefix('api/v1')
+  Route.resource('users', 'UserController').apiOnly()
+}).middleware(['auth'])
