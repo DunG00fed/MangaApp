@@ -10,9 +10,9 @@ class AuthController {
 
      if(username && password) {
        try {
-         return await auth.attempt(username, password)
+         return await auth.attempt(username, password, true)
        } catch (error) {
-         response.send(error);
+         response.send(error)
        }
      }
   }

@@ -1,7 +1,6 @@
 'use strict'
 
 const User = use('App/Models/User')
-const Hash = use('Hash')
 
 class RegisterController {
   async registerUser ( { request } ) {
