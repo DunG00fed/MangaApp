@@ -1,20 +1,25 @@
-const http = require('http'),
-      express = require('express'),
-      bodyParser = require('body-parser'),
-      passport = require('passport');
+'use strict'
 
-const server = express();
-const HOST = '127.0.0.1';
-const PORT = 3000;
+/*
+|--------------------------------------------------------------------------
+| Http server
+|--------------------------------------------------------------------------
+|
+| This file bootstrap Adonisjs to start the HTTP server. You are free to
+| customize the process of booting the http server.
+|
+| """ Loading ace commands """
+|     At times you may want to load ace commands when starting the HTTP server.
+|     Same can be done by chaining `loadCommands()` method after
+|
+| """ Preloading files """
+|     Also you can preload files by calling `preLoad('path/to/file')` method.
+|     Make sure to pass relative path from the project root.
+*/
 
-// parse application/x-www-form-urlencoded
-server.use(bodyParser.urlencoded({ extended: true }));
-// parse application/json
-server.use(bodyParser.json());
-// pass the passport middleware
-server.use(passport.initialize());
-//============== Start Server===========//
+const { Ignitor } = require('@adonisjs/ignitor')
 
-server.listen(PORT, HOST, () => {
-  console.log(`Server running at http://${HOST}:${PORT}/`);
-});
+new Ignitor(require('@adonisjs/fold'))
+  .appRoot(__dirname)
+  .fireHttpServer()
+  .catch(console.error)
