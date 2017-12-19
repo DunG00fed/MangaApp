@@ -21,6 +21,10 @@
   "dependencies": {
     "expo": "^22.0.2",
     "react": "16.0.0-beta.5",
-    "react-native": "^0.49.5"
+    "react-native": "^0.49.5",
+    "react-navigation": "1.0.0-beta.21",
+    "react-native-material-ui": "1.18.0",
+    "native-base": "2.3.5",
+    "react-native-md-textinput": "2.0.4"
   }
 }
