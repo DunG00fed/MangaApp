@@ -9,7 +9,7 @@ class MangaChapterSchema extends Schema {
       table.integer('manga_id').unsigned().references('id').inTable('manga').notNull()
       table.integer('manga_website_id').unsigned().references('id').inTable('manga_websites').notNull()
       table.string('name', 100)
-      table.integer('chapter_num').notNullable()
+      table.decimal('chapter_num').notNullable()
       table.timestamps()
     })
   }
