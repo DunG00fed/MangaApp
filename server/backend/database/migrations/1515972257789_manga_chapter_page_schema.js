@@ -6,9 +6,10 @@ class MangaChapterPageSchema extends Schema {
   up () {
     this.create('manga_chapter_pages', (table) => {
       table.increments()
+      table.integer('manga_chapter_id').unsigned().references('id').inTable('manga_chapters').notNull()
       table.string('name', 100)
       table.string('ext', 10)
-      table.integer('page_num')
+      table.integer('page_num').notNullable()
       table.timestamps()
     })
   }
