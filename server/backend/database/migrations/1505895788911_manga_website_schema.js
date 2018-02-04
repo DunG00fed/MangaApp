@@ -6,8 +6,8 @@ class MangaWebsiteSchema extends Schema {
   up () {
     this.create('manga_websites', (table) => {
       table.increments()
-      table.string('name', 100).notNullable().unique()
-      table.string('ext', 10).notNullable()
+      table.string('domain_name', 100).notNullable().unique()
+      table.string('name', 100).notNullable()
       table.timestamps()
     })
   }
