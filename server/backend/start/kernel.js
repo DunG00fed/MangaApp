@@ -1,6 +1,6 @@
 'use strict'
 
-const Server = use('Server')
+const Server = require('Server')
 
 /*
 |--------------------------------------------------------------------------

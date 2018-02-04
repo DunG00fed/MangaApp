@@ -1,11 +1,11 @@
 'use strict'
 
-const Model = use('Model')
+const Model = require('Model')
 
 class MangaWebsite extends Model {
-    static get table () {
-        return 'manga_websites'
-    }
+  static get table () {
+    return 'manga_websites'
+  }
 }
 
 module.exports = MangaWebsite

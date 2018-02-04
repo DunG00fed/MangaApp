@@ -13,7 +13,7 @@
 |
 */
 
-const Route = use('Route')
+const Route = require('Route')
 
 Route.post('login', 'AuthController.login')
 Route.post('register', 'RegisterController.registerUser')

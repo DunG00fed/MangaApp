@@ -1,6 +1,6 @@
 'use strict'
 
-const Model = use('Model')
+const Model = require('Model')
 
 class Genre extends Model {
 }
