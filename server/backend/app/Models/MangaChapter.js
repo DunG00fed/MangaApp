@@ -1,6 +1,6 @@
 'use strict'
 
-const Model = require('Model')
+const Model = use('Model')
 
 class MangaChapter extends Model {
   static get table () {

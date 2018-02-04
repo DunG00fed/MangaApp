@@ -1,7 +1,7 @@
 'use strict'
 
-const Env = require('Env')
-const Helpers = require('Helpers')
+const Env = use('Env')
+const Helpers = use('Helpers')
 
 module.exports = {
   /*

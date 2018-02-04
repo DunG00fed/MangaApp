@@ -1,6 +1,6 @@
 'use strict'
 
-const Schema = require('Schema')
+const Schema = use('Schema')
 
 class MangaWebsiteSchema extends Schema {
   up () {

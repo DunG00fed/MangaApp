@@ -1,6 +1,6 @@
 'use strict'
 
-const Env = require('Env')
+const Env = use('Env')
 
 module.exports = {
   /*

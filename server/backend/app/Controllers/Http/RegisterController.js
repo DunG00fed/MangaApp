@@ -1,6 +1,6 @@
 'use strict'
 
-const User = require('App/Models/User')
+const User = use('App/Models/User')
 
 class RegisterController {
   async registerUser ({request}) {
