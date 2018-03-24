@@ -31,7 +31,7 @@ class Manga extends Model {
    * @return {Object}
    */
   source () {
-    return this.hasOne('App/Models/MangaWebsite')
+    return this.belongsTo('App/Models/MangaWebsite')
   }
 }
 

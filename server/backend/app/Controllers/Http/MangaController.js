@@ -8,9 +8,12 @@ class MangaController {
     const title = request.input('title')
     const mangaService = new Service()
 
-    const result = await mangaService.index(title)
-    Logger.error(result)
-    response.json(result)
+    try {
+      const result = await mangaService.index(title)
+      response.json(result.toJSON())
+    } catch (error) {
+      Logger.error(error)
+    }
   }
 
   async store ({ request, response }) {

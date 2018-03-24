@@ -145,8 +145,8 @@ router.get('/:manga/:chapter', (req, res) => {
 /**
  * Retrieve manga chapter image urls.
  * @method
- * @param  {string} chapter_url
- * @param  {integer} chapter_num
+ * @param  {string} chapterUrl
+ * @param  {integer} chapterNum
  * @return {promise}
  */
 function getChapter (chapterUrl, chapterNum) {

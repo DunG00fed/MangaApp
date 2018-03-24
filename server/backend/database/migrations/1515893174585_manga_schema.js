@@ -6,11 +6,12 @@ class MangaSchema extends Schema {
   up () {
     this.create('manga', (table) => {
       table.increments()
-      table.integer('manga_website_id').unsigned().references('id').inTable('manga_websites').notNull()
-      table.string('name', 100).notNullable().unique()
-      table.string('author', 50)
-      table.string('artist', 50)
-      table.string('description', 255)
+      table.integer('manga_website_id').unsigned().references('id').inTable('manga_websites')
+      table.string('path', 100).notNullable()
+      table.string('name', 100).notNullable()
+      table.string('author', 64)
+      table.string('artist', 64)
+      table.string('description', 1024)
       table.boolean('is_completed')
       table.timestamps()
     })
