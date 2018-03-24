@@ -18,6 +18,8 @@ const Route = use('Route')
 Route.post('login', 'AuthController.login')
 Route.post('register', 'RegisterController.registerUser')
 
+Route.resource('manga', 'MangaController').apiOnly()
+
 Route.group(() => {
   Route.resource('users', 'UserController').apiOnly()
 }).middleware(['auth'])

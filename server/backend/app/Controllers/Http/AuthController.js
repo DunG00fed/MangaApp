@@ -9,7 +9,8 @@ class AuthController {
 
     if (username && password) {
       try {
-        return await auth.attempt(username, password, true)
+        const result =  await auth.attempt(username, password, true)
+        response.send(result)
       } catch (error) {
         response.send(error)
       }
