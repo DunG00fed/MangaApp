@@ -1,26 +1,29 @@
 'use strict'
 
-const Logger = use('Logger')
 const Axios = require('axios')
+const Config = use('Config')
+const Logger = use('Logger')
 const Manga = use('App/Models/Manga')
 const Website = use('App/Models/MangaWebsite')
+const MangaRepository = use('App/Repositories/MangaRepository')
 
 class MangaService {
-  async index (title) {
+  async index (path, domain) {
     try {
-      let manga = await Manga.findByOrFail('path', title)
+      const mangaRepository = new MangaRepository()
+      let manga = await mangaRepository.findByDomainOrFail(path, domain)
       return manga
     } catch (error) {
       let manga
-      await Axios.get('http://127.0.0.1:3000/api/mangareader/' + title)
+      await Axios.get(Config.get('scraperAPI.URL') + '/' + domain + '/' + path)
         .then(async (response) => {
           const data = response.data
-          let website = await Website.findBy('name', 'mangareader')
           manga = await Manga.create({
             name: data.title,
-            path: title,
+            path: path,
             description: data.summary
           })
+          let website = await Website.findBy('name', domain)
           await manga.source().associate(website)
         })
       return manga

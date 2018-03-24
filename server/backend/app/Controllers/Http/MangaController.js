@@ -5,11 +5,12 @@ const Logger = use('Logger')
 
 class MangaController {
   async index ({ request, response }) {
-    const title = request.input('title')
+    const path = request.input('path')
+    const domain = request.input('domain')
     const mangaService = new Service()
 
     try {
-      const result = await mangaService.index(title)
+      const result = await mangaService.index(path, domain)
       response.json(result.toJSON())
     } catch (error) {
       Logger.error(error)
