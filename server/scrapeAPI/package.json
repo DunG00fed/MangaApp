@@ -13,11 +13,10 @@
     "cheerio": "^1.0.0-rc.2",
     "cors": "^2.8.4",
     "express": "^4.15.4",
-    "phantom": "^4.0.5",
     "request": "^2.82.0"
   },
   "devDependencies": {
-    "nodemon": "^1.12.1",
+    "nodemon": "^1.17.2",
     "webpack": "^3.8.1"
   }
 }

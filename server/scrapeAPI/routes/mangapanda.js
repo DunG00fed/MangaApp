@@ -1,15 +1,15 @@
-//Dependencies
-var express = require('express'),
-    request = require('request'),
-    cheerio = require('cheerio');
+// Dependencies
+const express = require('express')
+const request = require('request')
+const cheerio = require('cheerio')
 
-var router = express.Router();
+const router = express.Router()
 
-const MANGA_PANDA_URL = 'http://www.mangapanda.com/';
+const MANGA_PANDA_URL = 'http://www.mangapanda.com/'
 
-/////////////////
+// ///////////////
 //   Routes    //
-/////////////////
+// ///////////////
 
 /**
  * Return manga details.
@@ -18,37 +18,36 @@ const MANGA_PANDA_URL = 'http://www.mangapanda.com/';
  * @param  {Http (https) Request Object} res
  * @return {JSON}
  */
- router.get('/:manga', function(req, res) {
-   var manga = req.params.manga;
+router.get('/:manga', (req, res) => {
+  let manga = req.params.manga
 
-   console.log("fetching Details");
+  console.log('fetching Details')
 
-   request(MANGA_PANDA_URL + manga, function(err, resp, html) {
+  request(MANGA_PANDA_URL + manga, (err, resp, html) => {
+    if (!err && resp.statusCode === 200) {
+      let $ = cheerio.load(html)
 
-     if (!err && resp.statusCode == 200) {
-       var $ = cheerio.load(html);
+      let mangaInfo = {}
+      let genreList = []
 
-       var manga_info = {};
-       var genre_list = [];
+      mangaInfo.img = ($('#mangaimg').children('img').attr('src'))
+      mangaInfo.title = $('.aname', 'div#mangaproperties').text()
+      mangaInfo.summary = $('#readmangasum').children('p').text()
+      mangaInfo.chapters = $('#listing').children('tbody').find('tr').length
 
-       manga_info.img = ($('#mangaimg').children('img').attr('src'));
-       manga_info.title = $('.aname', 'div#mangaproperties').text();
-       manga_info.summary = $('#readmangasum').children('p').text();
-       manga_info.chapters = $('#listing').children('tbody').find('tr').length;
+      $('.genretags').each((index, element) => {
+        genreList.push($(element).text())
+      })
 
-       $('.genretags').each(function() {
-         genre_list.push($(this).text());
-       });
+      mangaInfo.genre = genreList
+      console.log(mangaInfo)
 
-       manga_info.genre = genre_list;
-       console.log(manga_info);
-
-       res.send(JSON.stringify(manga_info));
-     } else {
-       console.log(err);
-     }
-   });
- });
+      res.send(JSON.stringify(mangaInfo))
+    } else {
+      console.log(err)
+    }
+  })
+})
 
 /**
  * Return a list of image urls of a single manga chapter.
@@ -57,63 +56,62 @@ const MANGA_PANDA_URL = 'http://www.mangapanda.com/';
  * @param  {Http (https) Request Object} res
  * @return {JSON}
  */
-router.get('/:manga/:chapter', function(req, res) {
-  var manga = req.params.manga;
-  var chapter_num = req.params.chapter;
-  var chapter_url = MANGA_PANDA_URL + manga + '/' + chapter_num;
+router.get('/:manga/:chapter', (req, res) => {
+  let manga = req.params.manga
+  let chapterNum = req.params.chapter
+  let chapterUrl = MANGA_PANDA_URL + manga + '/' + chapterNum
 
-  console.log("fetching Pages");
+  console.log('fetching Pages')
 
-  getChapter(chapter_url, chapter_num).then(function(pages) {
-    var chapter = {
-        chapter: chapter_num,
-        pages: pages
-    };
-    console.log(chapter);
-    res.send(JSON.stringify(chapter));
-  }).catch(function(err) {
-    console.log(err);
-  });
-});
-
+  getChapter(chapterUrl, chapterNum).then((pages) => {
+    let chapter = {
+      chapter: chapterNum,
+      pages: pages
+    }
+    console.log(chapter)
+    res.send(JSON.stringify(chapter))
+  }).catch((err) => {
+    console.log(err)
+  })
+})
 
 /**
  * Retrieve manga chapter image urls.
  * @method
- * @param  {string} chapter_url
- * @param  {integer} chapter_num
+ * @param  {string} chapterUrl
+ * @param  {integer} chapterNum
  * @return {promise}
  */
-function getChapter(chapter_url, chapter_num) {
-  return new Promise(function(resolve, reject) {
-    request(chapter_url, function(err, resp, html) {
-      if (!err && resp.statusCode == 200) {
-        var $ = cheerio.load(html);
-        var page_num = $('#pageMenu').find('option').length;
+function getChapter (chapterUrl, chapterNum) {
+  return new Promise((resolve, reject) => {
+    request(chapterUrl, (err, resp, html) => {
+      if (!err && resp.statusCode === 200) {
+        let $ = cheerio.load(html)
+        let pageNum = $('#pageMenu').find('option').length
 
-        var pages = [];
-        var promises = [];
-        var count;
+        let pages = []
+        let promises = []
+        let count
 
-        for (count = 1; count <= page_num; count++) {
-          promises.push(getImage(chapter_url + '/' + count));
+        for (count = 1; count <= pageNum; count++) {
+          promises.push(getImage(chapterUrl + '/' + count))
         }
 
-        Promise.all(promises).then(function(img_urls) {
-          for(count = 0; count < img_urls.length; count++){
-            pages.push( {
+        Promise.all(promises).then((imgUrls) => {
+          for (count = 0; count < imgUrls.length; count++) {
+            pages.push({
               page: count + 1,
-              url: img_urls[count]
-            });
+              url: imgUrls[count]
+            })
           }
           // console.log(pages);
-          resolve(pages);
-        }).catch(function(err) {
-          reject(err);
-        });
+          resolve(pages)
+        }).catch((err) => {
+          reject(err)
+        })
       }
-    });
-  });
+    })
+  })
 }
 
 /**
@@ -122,20 +120,20 @@ function getChapter(chapter_url, chapter_num) {
  * @param  {string} uri
  * @return {Promise}
  */
-function getImage(uri) {
-  return new Promise(function(resolve, reject) {
-    request(uri, function(err, res, html) {
-      if (!err && res.statusCode == 200) {
-        var $ = cheerio.load(html);
-        $('#img', '#imgholder').each(function() {
-          resolve($(this).attr('src'));
-        });
+function getImage (uri) {
+  return new Promise((resolve, reject) => {
+    request(uri, (err, res, html) => {
+      if (!err && res.statusCode === 200) {
+        let $ = cheerio.load(html)
+        $('#img', '#imgholder').each(() => {
+          resolve($(this).attr('src'))
+        })
       } else {
-        reject(err);
+        reject(err)
       }
-    });
-  });
+    })
+  })
 }
 
-//Return router
-module.exports = router;
+// Return router
+module.exports = router
