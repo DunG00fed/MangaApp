@@ -13,7 +13,7 @@ class Manga extends Model {
    * @return {Object}
    */
   genres () {
-    return this.hasMany('App/Models/Genre')
+    return this.belongsToMany('App/Models/Genre').pivotTable('manga_genre')
   }
 
   /**

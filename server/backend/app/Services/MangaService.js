@@ -5,6 +5,7 @@ const Config = use('Config')
 const Logger = use('Logger')
 const Manga = use('App/Models/Manga')
 const Website = use('App/Models/MangaWebsite')
+const Genre = use('App/Models/Genre')
 const MangaRepository = use('App/Repositories/MangaRepository')
 
 class MangaService {
@@ -25,6 +26,12 @@ class MangaService {
           })
           let website = await Website.findBy('name', domain)
           await manga.source().associate(website)
+
+          // TODO Change this to a Promise All
+          for (let genre of data.genre) {
+            let genreEntity = await Genre.findBy('name', genre)
+            await manga.genres().attach([genreEntity.id])
+          }
         })
       return manga
     }
