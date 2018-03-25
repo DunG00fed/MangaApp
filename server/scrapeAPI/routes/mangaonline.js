@@ -5,7 +5,7 @@ const cheerio = require('cheerio')
 
 const router = express.Router()
 
-const MANGA_ONLINE_URL = 'http://www5.mangaonline.today/'
+const MANGA_ONLINE_URL = 'https://mangaonline.fun/'
 
 // ///////////////
 //   Routes    //

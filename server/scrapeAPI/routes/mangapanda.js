@@ -35,8 +35,8 @@ router.get('/:manga', (req, res) => {
       mangaInfo.summary = $('#readmangasum').children('p').text()
       mangaInfo.chapters = $('#listing').children('tbody').find('tr').length
 
-      $('.genretags').each(() => {
-        genreList.push($(this).text())
+      $('.genretags').each((index, element) => {
+        genreList.push($(element).text())
       })
 
       mangaInfo.genre = genreList

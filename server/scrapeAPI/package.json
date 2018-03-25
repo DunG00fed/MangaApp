@@ -16,6 +16,7 @@
     "request": "^2.82.0"
   },
   "devDependencies": {
+    "nodemon": "^1.17.2",
     "webpack": "^3.8.1"
   }
 }
