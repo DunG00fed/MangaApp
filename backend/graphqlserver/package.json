@@ -10,9 +10,16 @@
   "author": "Jared Payne",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^2.0.0-rc.0",
-    "apollo-server-express": "^2.0.0-rc.0",
+    "apollo-server": "^2.0.0",
+    "apollo-server-express": "^2.0.0",
+    "dotenv": "^6.0.0",
     "express": "^4.16.3",
-    "graphql": "^0.13.2"
+    "graphql": "^0.13.2",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.38.0"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1"
   }
 }
