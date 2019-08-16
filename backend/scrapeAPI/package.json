@@ -1,0 +1,22 @@
+{
+  "name": "manga",
+  "version": "1.0.0",
+  "description": "manga web scraper",
+  "main": "\u001b[D\u001b[D\u001b[D\u001bserver.js)",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jared Payne",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cheerio": "^1.0.0-rc.2",
+    "cors": "^2.8.4",
+    "express": "^4.15.4",
+    "request": "^2.82.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.2",
+    "webpack": "^3.8.1"
+  }
+}
