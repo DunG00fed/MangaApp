@@ -10,7 +10,7 @@
   "author": "Jared Payne",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^2.0.0",
+    "apollo-server": "^2.25.3",
     "apollo-server-express": "^2.0.0",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
